@@ -91,11 +91,8 @@ router.put('/', isAuth ,oneOf(validateRegister),expressAsyncHandler(async(req,re
 
 /* 탈퇴 */
 router.delete('/', isAuth, expressAsyncHandler(async (req,res,next)=>{
-    const histories = await History.find({userId:req.user._id})
-    histories.forEach(async(history)=>{
-        await History.findByIdAndDelete(history._id)
-    })
-    const user = await User.findByIdAndDelete(req.user._id)
+    await History.deleteMany({userId:req.user._id})
+    await User.findByIdAndDelete(req.user._id)
     if(!user){
         res.status(404).json({code:404, message:'User not Found'})
     }else{
