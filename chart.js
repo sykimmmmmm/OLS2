@@ -1,6 +1,6 @@
 const BASE_URL = 'http://localhost:4000'
 const email = 'saisprn@gmail.com' //admin@gmail.com  dfuturb@gmail.com saisprn@gmail.com
-const password = 'nvxi6094*#&' // admin123!@# nvxi6094*#& tiqh6418*@^
+const password = 'tiqh6418*@^' // admin123!@# nvxi6094*#& tiqh6418*@^
 const graphType = 'bar'
 const field = 'category'
 
