@@ -49,7 +49,7 @@ router.post('/login',[validateUserEmail(),validateUserPassword()],expressAsyncHa
         console.log(errors.array())
         res.status(400).json({code:400 ,message:'Invalid Form data for user', error: errors.array()})
     }else{
-        console.log(req.body)
+        // console.log(req.body)
         const loginUser = await User.findOne({
             email: req.body.email,
             password: req.body.password

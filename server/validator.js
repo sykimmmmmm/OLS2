@@ -1,5 +1,5 @@
 const {body} = require('express-validator')
-const User = require('./src/models/User')
+
 const isFieldEmpty = (field) =>{
     return body(field)
            .notEmpty()

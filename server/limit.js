@@ -1,13 +1,5 @@
 const expressRateLimit = require('express-rate-limit')
 
-const isAdmin = async(user)=>{
-    if(user.isAdmin === true){
-        return true
-    }else{
-        return false
-    }
-}
-
 
 const limiter = expressRateLimit({
     windowMs: 1 * 60 * 1000,

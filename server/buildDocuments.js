@@ -73,7 +73,7 @@ const createBooks = async (n, books) =>{
     for(let i=0;i<n;i++){
         const book = new Book({
             title: generateRandomTitle(5),
-            summary: generateRandomStr(30),
+            summary: generateRandomStr(200),
             author: generateRandomTitle(3),
             category: selectRandomValue(category),
             release : generateRandomDate(new Date(1970,0,1), new Date()),

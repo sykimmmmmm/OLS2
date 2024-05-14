@@ -30,10 +30,13 @@ historySchema.path('status').validate(function(value){
     return /대출|반납|연체|연장/.test(value)
 },'user `{VALUE}` 잘못된 형태')
 
+
+/* 남은 기간 보여주기 */
 historySchema.virtual('restTime').get(function(){
     return moment(this.expiredAt).locale('ko').fromNow()
 })
 
+/* 연체 체크를 위한 가상필드 */
 historySchema.virtual('expire').get(function(){
     return moment(this.expiredAt).diff(moment(),'days')
 })

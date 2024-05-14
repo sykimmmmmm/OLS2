@@ -8,6 +8,8 @@ const {validateBookTitle,validateBookSummary,validateBookCategory,validateBookIs
 const router = express.Router()
 
 const validateBook = [validateBookTitle(),validateBookSummary(),validateBookCategory(),validateBookIsbn()]
+
+/* 책추가 중복체크 */
 router.post('/book',isAuth, isAdmin,validateBook,expressAsyncHandler(async (req,res,next)=>{
     const errors = validationResult(req)
     if(!errors.isEmpty()){
@@ -42,6 +44,7 @@ router.post('/book',isAuth, isAdmin,validateBook,expressAsyncHandler(async (req,
     }
 }))
 
+/* 책 수정 */
 router.put('/book/:isbn',isAuth, isAdmin,oneOf(validateBook), expressAsyncHandler(async (req,res,next)=>{
     const errors = validationResult(req)
     if(!errors.isEmpty()){
@@ -66,6 +69,7 @@ router.put('/book/:isbn',isAuth, isAdmin,oneOf(validateBook), expressAsyncHandle
     }
 }))
 
+/* 도서 삭제 */
 router.delete('/book/:id',isAuth, isAdmin, expressAsyncHandler(async (req,res,next)=>{
     const book = await Book.findByIdAndDelete(req.params.id)
     if(!book){

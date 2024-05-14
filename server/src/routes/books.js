@@ -5,30 +5,12 @@ const History = require('../models/History')
 const expressAsyncHandler = require('express-async-handler')
 const { isAuth } = require('../../auth')
 const moment = require('moment')
-const {limiter } =require('../../limit')
+const { limiter } =require('../../limit')
 const router = express.Router()
 
 
-/* 비회원유저포함 책조회가능 */
-router.get('/', limiter, expressAsyncHandler(async (req,res,next)=>{
-    const books = await Book.find({})
-    if(!books){
-        res.status(404).json({code:404,message:'No Books...'})
-    }else{
-        res.json({code:200, books})
-    }
-}))
-/* 비회원포함 책 상세보기 */
-router.get('/:isbn',limiter, expressAsyncHandler(async (req,res,next)=>{
-    const book = await Book.findOne({isbn:req.params.isbn})
-    if(!book){
-        res.status(404).json({code:404,message:'No Book'})
-    }else{
-        res.json({code:200, book})
-    }
-}))
 
-/* 책빌리기 */
+/* 책빌리기 및 히스토리 추가 */
 router.post('/borrow',isAuth,limiter, expressAsyncHandler(async (req,res,next)=>{
     const book = await Book.findOne({
         isbn: req.body.isbn
@@ -52,11 +34,11 @@ router.post('/borrow',isAuth,limiter, expressAsyncHandler(async (req,res,next)=>
         user.checkOutBooks.push(book)
         user.lastModifiedAt = new Date()
         const updatedUser = await user.save()
-        res.json({code:200, message:"책을 빌렸습니다",updatedUser, newHistory, recentlyLogin:updatedUser.recentlyLogin})
+        res.json({code:200, message:"책을 빌렸습니다",updatedUser, newHistory})
     }
 }))
 
-/* 책반납 */
+/* 책반납 및 히스토리 상태 변경*/
 router.delete('/borrow/:id',isAuth,limiter, expressAsyncHandler(async (req,res,next)=>{
     const book = await Book.findById(req.params.id)
     const user = await User.findById(req.user._id)
@@ -82,7 +64,7 @@ router.delete('/borrow/:id',isAuth,limiter, expressAsyncHandler(async (req,res,n
     }
 }))
 
-/* 책 연장신청 */
+/* 책 연장신청 및 히스토리 연장 변경 */
 router.put('/borrow/:bookId',isAuth,limiter,expressAsyncHandler(async (req,res,next)=>{
     const history = await History.findOne({
         userId : req.user._id,
@@ -120,8 +102,31 @@ router.get('/borrow/:isbn',isAuth,limiter, expressAsyncHandler(async (req,res,ne
         res.status(404).json({code:404,message:'없는 사용자'})
     }else{
         const book = await Book.findOne({isbn: req.params.isbn})
-        const {lastModifiedAgo} = book
-        res.json({code:200 , book, lastModifiedAgo})
+        const {synopsis} = book
+        res.json({code:200 , book, synopsis})
     }
 }))
+
+/* 비회원유저포함 책조회가능 */
+router.get('/', limiter, expressAsyncHandler(async (req,res,next)=>{
+    const books = await Book.find({})
+    if(!books){
+        res.status(404).json({code:404,message:'No Books...'})
+    }else{
+        res.json({code:200, books})
+    }
+}))
+
+/* 비회원포함 책 상세보기 */
+router.get('/:isbn',limiter, expressAsyncHandler(async (req,res,next)=>{
+    const book = await Book.findOne({isbn:req.params.isbn})
+    if(!book){
+        res.status(404).json({code:404,message:'No Book'})
+    }else{
+        res.json({code:200, book})
+    }
+}))
+
+
+
 module.exports = router

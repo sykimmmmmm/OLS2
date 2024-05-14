@@ -23,7 +23,6 @@ router.get('/group/:field',isAuth,limiter, isAdmin, isFilterValid, expressAsyncH
             $sort:{_id: 1}
         }
     ])
-    console.log(docs)
     console.log(`Number of group : ${docs.length}`)
     res.json({code: 200, docs})
 }))
@@ -61,7 +60,6 @@ router.get('/group/mine/:field',isAuth,limiter, isFilterValid, expressAsyncHandl
             $sort:{ _id: 1}
         }
     ])
-    console.log(docs)
     console.log(`Number of group : ${docs.length}`)
     res.json({code: 200, docs})
 }))
