@@ -1,6 +1,6 @@
 const BASE_URL = 'http://localhost:4000'
 const email = 'saisprn@gmail.com' //admin@gmail.com  dfuturb@gmail.com saisprn@gmail.com
-const password = 'tiqh6418*@^' // admin123!@# nvxi6094*#& tiqh6418*@^
+const password = 'nvxi6094*#&' // admin123!@# nvxi6094*#& tiqh6418*@^
 const graphType = 'bar'
 const field = 'category'
 
@@ -48,7 +48,9 @@ function displayChart(type,group){
         type,
         data: {
             labels: group.filter(item=>item._id !== undefined && item._id !== '')
-            .map(item => item._id),
+            .map(item => item._id.year ? `${item._id.year}년 ${item._id.month}월` : 
+                 typeof item._id === 'boolean' ? (item._id === true ? "종료" : "진행중") : 
+                 item._id.year === null ? '반납하지않음' : item._id),
             datasets: [{
             label: '# of Books',
             data: group.filter(item=>item._id !== undefined && item._id !== '')
@@ -77,5 +79,6 @@ function displayChart(type,group){
 
 fetchData(email,password,field)
 .then(group =>{
+    console.log(group)
     displayChart(graphType,group)
 })
