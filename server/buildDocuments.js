@@ -6,6 +6,7 @@ const config = require('./config')
 const category = ['철학', '과학', '신화', '자기계발', '추리소설', '요리책', '여행']
 const users = [] //생성된 사용자를 저장
 const books = [] //생성된 책들 저장
+
 mongoose.connect(config.MONGODB_URL)//프로미스 
 .then(()=> console.log('데이터베이스 연동'))
 .catch(e=> console.log(`데이터 연결 실패!!! : ${e}`))
@@ -63,12 +64,11 @@ const createUsers = async (n, users) =>{
             userId: generateRandomStr(10),
             password: generateRandomStr(4)+generateRandomNum(4)+generateRandomSymbol(3),
         })
-        users.push(await user.save())
+        await user.save()
     }
-    return users
 }
 
-const createBooks = async (n, books) =>{
+const createBooks = async (n) =>{
     console.log('creating books now...')
     for(let i=0;i<n;i++){
         const book = new Book({
@@ -79,17 +79,15 @@ const createBooks = async (n, books) =>{
             release : generateRandomDate(new Date(1970,0,1), new Date()),
             isbn : `978-89-${generateRandomNum(6)}-${generateRandomNum(1)}-${generateRandomNum(1)}`
         })
-        books.push(await book.save())
+        await book.save()
     }
-    console.log(books)
-    return books
 }
 
 
 //사용자와 해당 할일 순서대로 생성
-const buildData = async (users,books) =>{
-    // users = await createUsers(10,users)
-    books = await createBooks(200,books)
+const buildData = async () =>{
+    await createUsers(10)
+    await createBooks(200)
 }
 
-buildData(users,books)
+buildData()
