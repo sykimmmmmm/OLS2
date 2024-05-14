@@ -1,6 +1,6 @@
 const BASE_URL = 'http://localhost:4000'
-const email = 'dfuturb@gmail.com' //admin@gmail.com  dfuturb@gmail.com
-const password = 'nvxi6094*#&' // admin123!@# nvxi6094*#&
+const email = 'saisprn@gmail.com' //admin@gmail.com  dfuturb@gmail.com saisprn@gmail.com
+const password = 'tiqh6418*@^' // admin123!@# nvxi6094*#& tiqh6418*@^
 const graphType = 'bar'
 const field = 'category'
 
@@ -56,8 +56,8 @@ function displayChart(type,group){
             data: group.filter(item=>item._id !== undefined && item._id !== '')
             .map(item =>item.count), //날짜
             borderWidth: 1,
-            // backgroundColor: ['orange','purple','skyblue','green','red']
-            backgroundColor: '#ffD700',
+            backgroundColor: ['orange','purple','skyblue','green','red','slateblue','pink'],
+            // backgroundColor: '#ffD700',
             borderColor:'#111'
         }]
         },

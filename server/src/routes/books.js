@@ -44,7 +44,8 @@ router.delete('/borrow/:id',isAuth,limiter, expressAsyncHandler(async (req,res,n
     const user = await User.findById(req.user._id)
     const history = await History.findOne({
         userId : req.user._id,
-        bookId : req.params.id
+        bookId : req.params.id,
+        status : {$in:['대출','연장','연체']}
     })
     if(!user){
         res.status(404).json({code:404,message:'user not Found!'})
@@ -68,7 +69,8 @@ router.delete('/borrow/:id',isAuth,limiter, expressAsyncHandler(async (req,res,n
 router.put('/borrow/:bookId',isAuth,limiter,expressAsyncHandler(async (req,res,next)=>{
     const history = await History.findOne({
         userId : req.user._id,
-        bookId : req.params.bookId
+        bookId : req.params.bookId,
+        status : {$in:['대출','연장','연체']}
     })
     if(!history){
         res.status(404).json({code:404, message:'no histoy'})
@@ -76,7 +78,7 @@ router.put('/borrow/:bookId',isAuth,limiter,expressAsyncHandler(async (req,res,n
         history.expiredAt = moment(history.expiredAt).add(7,'days')
         history.status = '연장'
         const newHistory = await history.save()
-        res.json({code:200, message:"연장했습니다" ,newHistory})
+        res.json({code:200, message:"7일 연장했습니다" ,newHistory})
     }
 }))
 
@@ -87,8 +89,11 @@ router.get('/borrow',isAuth,limiter, expressAsyncHandler(async (req,res,next)=>{
         res.status(404).json({code:404,message:'없는 사용자입니다'})
     }else{
         const { checkOutBooks } = user
+        const refinedBooks = checkOutBooks.map(book=>{
+            return {...book._doc,synopsis:book.synopsis}
+        })
         if(checkOutBooks.length>0){
-            res.json({code:200, checkOutBooks})
+            res.json({code:200, refinedBooks})
         }else{
             res.json({code:404,message:'대출중인 책이없습니다', checkOutBooks})
         }
@@ -102,18 +107,20 @@ router.get('/borrow/:isbn',isAuth,limiter, expressAsyncHandler(async (req,res,ne
         res.status(404).json({code:404,message:'없는 사용자'})
     }else{
         const book = await Book.findOne({isbn: req.params.isbn})
-        const {synopsis} = book
-        res.json({code:200 , book, synopsis})
+        res.json({code:200 , book})
     }
 }))
 
 /* 비회원유저포함 책조회가능 */
 router.get('/', limiter, expressAsyncHandler(async (req,res,next)=>{
     const books = await Book.find({})
+    const refinedBooks = books.map(book=>{
+        return {...book._doc,synopsis:book.synopsis}
+    })
     if(!books){
         res.status(404).json({code:404,message:'No Books...'})
     }else{
-        res.json({code:200, books})
+        res.json({code:200, refinedBooks})
     }
 }))
 
